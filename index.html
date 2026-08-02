@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Escolar</title>
+<style>
+  :root{
+    --bg:#F5F7FA; --surface:#FFFFFF; --border:#E3E7EC; --text:#1B222C; --muted:#6B7280;
+    --primary:#1F4E78; --primary-dark:#163A5B; --accent:#2E86AB;
+    --success:#1E7B34; --success-bg:#E6F4EA;
+    --danger:#B3261E; --danger-bg:#FBEAE9;
+    --warning:#9C6500; --warning-bg:#FFF2CC;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  h1,h2,h3{margin:0 0 8px;color:var(--primary-dark);}
+  p{margin:0 0 10px;line-height:1.5;}
+  .muted{color:var(--muted);}
+  a{color:var(--accent);}
+  .topbar{background:var(--primary);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .topbar .brand{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .topbar .who{font-size:13px;opacity:.9;}
+  .container{max-width:1000px;margin:0 auto;padding:24px 16px 60px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .grid{display:grid;gap:16px;}
+  .grid-2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+  .btn{display:inline-block;background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;}
+  .btn:hover{background:var(--primary-dark);}
+  .btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--primary);}
+  .btn.danger{background:var(--danger);}
+  .btn.success{background:var(--success);}
+  .btn.small{padding:6px 12px;font-size:12px;}
+  .btn[disabled]{opacity:.5;cursor:not-allowed;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--muted);}
+  .field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;}
+  .field textarea{min-height:80px;resize:vertical;}
+  .row{display:flex;gap:14px;flex-wrap:wrap;}
+  .row > *{flex:1;min-width:160px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;}
+  .badge.pendente{background:var(--warning-bg);color:var(--warning);}
+  .badge.aprovado,.badge.liberado,.badge.presente,.badge.concluido{background:var(--success-bg);color:var(--success);}
+  .badge.rejeitado,.badge.ausente{background:var(--danger-bg);color:var(--danger);}
+  .badge.Ativo{background:var(--success-bg);color:var(--success);}
+  .badge.Inativo{background:var(--danger-bg);color:var(--danger);}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+  .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .stat .value{font-size:24px;font-weight:700;color:var(--primary-dark);}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;}
+  .bar-row .name{width:150px;flex-shrink:0;color:var(--muted);}
+  .bar-track{flex:1;background:#EEF1F4;border-radius:6px;height:10px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--accent);border-radius:6px;}
+  .bar-row .val{width:90px;text-align:right;font-weight:600;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0;}
+  .tab-btn{background:none;border:none;padding:10px 14px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;}
+  .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+  .toast{position:fixed;top:16px;right:16px;background:var(--primary-dark);color:#fff;padding:12px 18px;border-radius:8px;font-size:14px;z-index:999;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:320px;}
+  .toast.error{background:var(--danger);}
+  .toast.success{background:var(--success);}
+  .hero{text-align:center;padding:50px 16px;}
+  .hero h1{font-size:30px;}
+  .hero p{max-width:520px;margin:0 auto 22px;color:var(--muted);}
+  .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:700px){.split{grid-template-columns:1fr;}}
+  .link-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;text-decoration:underline;padding:0;}
+  .empty{color:var(--muted);font-style:italic;padding:14px 0;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;}
+  img.preview{max-width:100%;border-radius:8px;margin-top:8px;border:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<footer>Sistema Escolar &middot; feito com Google Sheets + Apps Script</footer>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — troque pela URL do seu Apps Script publicado
+   (Implantar > Nova implantação > Web app > copiar URL /exec)
+   ============================================================ */
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbzjJ9QiqWjms5AzTT53gIB0WlNDBMNNZE8Ovou7WMmXm3jrx57LWPgXlc6Eod197zxj/exec'
+};
+
+/* ============================== ESTADO ============================== */
+const state = {
+  route: 'home',
+  tab: null,
+  token: localStorage.getItem('se_token') || null,
+  user: JSON.parse(localStorage.getItem('se_user') || 'null')
+};
+
+function setSession(token, user){
+  state.token = token; state.user = user;
+  localStorage.setItem('se_token', token);
+  localStorage.setItem('se_user', JSON.stringify(user));
+}
+function clearSession(){
+  state.token = null; state.user = null;
+  localStorage.removeItem('se_token'); localStorage.removeItem('se_user');
+}
+
+/* ============================== API ============================== */
+async function api(action, payload){
+  if (CONFIG.API_URL.indexOf('COLOQUE_AQUI') !== -1){
+    throw new Error('Configure a API_URL no topo do arquivo index.html (veja o README).');
+  }
+  payload = payload || {};
+  payload.action = action;
+  if (state.token) payload.token = state.token;
+  let res;
+  try{
+    res = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+  }catch(e){
+    throw new Error('Não foi possível conectar ao servidor. Verifique sua internet ou a URL da API.');
+  }
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error || 'Erro desconhecido.');
+  return json.data;
+}
+
+function fileToBase64(inputEl){
+  return new Promise((resolve, reject) => {
+    const file = inputEl.files && inputEl.files[0];
+    if (!file){ resolve(null); return; }
+    const reader = new FileReader();
+    reader.onload = () => resolve({ base64: reader.result, nome: file.name, mime: file.type });
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============================== HELPERS UI ============================== */
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtMoney(v){ return 'R$ ' + (Number(v)||0).toFixed(2).replace('.', ','); }
+function fmtDate(v){
+  if (!v) return '—';
+  const d = new Date(v);
+  if (isNaN(d)) return String(v);
+  return d.toLocaleDateString('pt-BR');
+}
+function badge(status){
+  return `<span class="badge ${escapeHtml(status||'')}">${escapeHtml(status||'—')}</span>`;
+}
+let toastTimer = null;
+function toast(msg, type){
+  let el = document.getElementById('toast');
+  if (el) el.remove();
+  el = document.createElement('div');
+  el.id = 'toast';
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.remove(), 4200);
+}
+function go(route, tab){
+  state.route = route;
+  state.tab = tab || null;
+  render();
+  window.scrollTo(0,0);
+}
+function setTab(tab){ state.tab = tab; render(); }
+
+async function withLoading(btn, fn){
+  const original = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Aguarde...';
+  try{ await fn(); } finally { btn.disabled = false; btn.textContent = original; }
+}
+
+/* ============================== LAYOUT ============================== */
+function topbar(){
+  const who = state.user
+    ? `<span class="who">${escapeHtml(state.user.nome)} · ${escapeHtml(state.user.perfil)}</span>
+       <button class="btn secondary small" onclick="logout()" style="background:transparent;color:#fff;border-color:#fff;">Sair</button>`
+    : `<button class="btn secondary small" onclick="go('login')" style="background:transparent;color:#fff;border-color:#fff;">Entrar</button>`;
+  return `<div class="topbar">
+    <div class="brand" onclick="go(${state.user ? "'painel'" : "'home'"})">🎓 Sistema Escolar</div>
+    <div style="display:flex;align-items:center;gap:12px;">${who}</div>
+  </div>`;
+}
+
+async function logout(){
+  try{ await api('logout', {}); }catch(e){}
+  clearSession();
+  go('home');
+  toast('Sessão encerrada.');
+}
+
+/* ============================== ROTAS ============================== */
+function render(){
+  const app = document.getElementById('app');
+  let html = topbar() + '<div class="container">';
+  if (state.route === 'home') html += viewHome();
+  else if (state.route === 'cadastroAluno') html += viewCadastro('aluno');
+  else if (state.route === 'cadastroEquipe') html += viewCadastro('equipe');
+  else if (state.route === 'login') html += viewLogin();
+  else if (state.route === 'calendario') html += viewCalendarioPublico();
+  else if (state.route === 'painel' && state.user) html += viewPainel();
+  else html += viewHome();
+  html += '</div>';
+  app.innerHTML = html;
+  afterRender();
+}
+
+function afterRender(){
+  if (state.route === 'painel' && state.user){
+    const perfil = state.user.perfil;
+    const tab = state.tab || defaultTab(perfil);
+    loadTabData(perfil, tab);
+  } else if (state.route === 'calendario'){
+    loadCalendarioPublico();
+  }
+}
+
+function defaultTab(perfil){
+  return {aluno:'inicio', secretaria:'financeiro', professor:'notas', coordenador:'aprovacoes'}[perfil];
+}
+
+/* ============================== HOME (pública) ============================== */
+function viewHome(){
+  return `
+  <div class="hero">
+    <h1>Bem-vindo(a) ao Sistema Escolar</h1>
+    <p>Inscreva-se como novo aluno, ou entre com seu cadastro de aluno, professor, secretaria ou coordenação.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#" onclick="go('cadastroAluno');return false;">📝 Inscrição de novos alunos</a>
+      <a class="btn secondary" href="#" onclick="go('login');return false;">Já tenho cadastro — Entrar</a>
+      <a class="btn secondary" href="#" onclick="go('calendario');return false;">📅 Calendário de aulas e férias</a>
+    </div>
+    <p style="margin-top:22px;"><button class="link-btn" onclick="go('cadastroEquipe')">Sou professor(a) ou da secretaria e quero me cadastrar</button></p>
+  </div>`;
+}
+
+/* ============================== CADASTRO ============================== */
+function viewCadastro(modo){
+  const isAluno = modo === 'aluno';
+  return `
+  <div class="card" style="max-width:520px;margin:0 auto;">
+    <h2>${isAluno ? 'Inscrição de novo aluno' : 'Cadastro de professor ou secretaria'}</h2>
+    <p class="muted">${isAluno ? 'Seu cadastro será analisado pela secretaria.' : 'Seu cadastro será analisado pelo coordenador geral.'}</p>
+    <p><button type="button" class="link-btn" onclick="go('calendario')">📅 Ver dias de aula, férias e horários antes de se inscrever</button></p>
+    <form onsubmit="handleCadastro(event, '${modo}')">
+      <div class="field"><label>Nome completo</label><input required name="nome"></div>
+      <div class="field"><label>Email</label><input required type="email" name="email"></div>
+      <div class="field"><label>Senha</label><input required type="password" name="senha" minlength="4"></div>
+      <div class="row">
+        <div class="field"><label>Telefone</label><input name="telefone" placeholder="(DDD) 9xxxx-xxxx"></div>
+        <div class="field"><label>Data de nascimento</label><input type="date" name="dataNascimento"></div>
+      </div>
+      ${!isAluno ? `
+      <div class="field"><label>Perfil</label>
+        <select name="perfil" required>
+          <option value="professor">Professor</option>
+          <option value="secretaria">Secretaria</option>
+        </select>
+      </div>` : ''}
+      ${isAluno ? `
+      <div class="row">
+        <div class="field"><label>Turma</label><input name="turma" placeholder="Ex: Turma A"></div>
+        <div class="field"><label>Turno</label>
+          <select name="turno"><option>Manhã</option><option>Tarde</option><option>Noite</option></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Sexo</label>
+          <select name="sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select>
+        </div>
+        <div class="field"><label>É batizado(a)?</label>
+          <select name="batizado"><option value="Sim">Sim</option><option value="Não">Não</option></select>
+        </div>
+      </div>` : `
+      <div class="field"><label>Disciplinas (se professor)</label><input name="disciplinas" placeholder="Ex: Matemática, Física"></div>
+      `}
+      <button class="btn" type="submit" style="width:100%;">Enviar cadastro</button>
+    </form>
+    <p style="margin-top:14px;"><button class="link-btn" onclick="go('home')">← Voltar</button></p>
+  </div>`;
+}
+
+async function handleCadastro(ev, modo){
+  ev.preventDefault();
+  const f = ev.target;
+  const payload = {
+    nome: f.nome.value, email: f.email.value, senha: f.senha.value,
+    telefone: f.telefone ? f.telefone.value : '', dataNascimento: f.dataNascimento ? f.dataNascimento.value : '',
+    perfil: modo === 'aluno' ? 'aluno' : f.perfil.value,
+    turma: f.turma ? f.turma.value : '', turno: f.turno ? f.turno.value : '',
+    sexo: f.sexo ? f.sexo.value : '', batizado: f.batizado ? f.batizado.value : '',
+    disciplinas: f.disciplinas ? f.disciplinas.value : ''
+  };
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('cadastro', payload);
+      toast(data.mensagem, 'success');
+      go('login');
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+/* ============================== CALENDÁRIO (público) ============================== */
+function viewCalendarioPublico(){
+  return `<div class="card">
+    <h2>📅 Calendário — dias de aula, férias e eventos</h2>
+    <p class="muted">Consulte antes de se inscrever. Quem edita essas informações é a secretaria.</p>
+    <div id="calendarioPublicoContainer"><p class="muted">Carregando...</p></div>
+    <p style="margin-top:14px;"><button class="link-btn" onclick="go('home')">← Voltar</button></p>
+  </div>`;
+}
+
+async function loadCalendarioPublico(){
+  const el = document.getElementById('calendarioPublicoContainer');
+  if (!el) return;
+  try{
+    const eventos = await api('listarCalendario', {});
+    el.innerHTML = renderListaCalendario(eventos);
+  }catch(e){ el.innerHTML = `<p style="color:var(--danger);">${escapeHtml(e.message)}</p>`; }
+}
+
+function renderListaCalendario(eventos){
+  if (!eventos.length) return `<p class="empty">Nenhum evento cadastrado ainda.</p>`;
+  return `<table><thead><tr><th>Data</th><th>Até</th><th>Tipo</th><th>Título</th><th>Descrição</th></tr></thead><tbody>
+    ${eventos.map(e => `<tr>
+      <td>${fmtDate(e.Data)}</td><td>${e.DataFim ? fmtDate(e.DataFim) : '—'}</td>
+      <td>${badgeTipoEvento(e.Tipo)}</td><td>${escapeHtml(e.Titulo)}</td><td>${escapeHtml(e.Descricao)}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function badgeTipoEvento(tipo){
+  const map = {'Aula Regular':'aprovado','Feriado':'pendente','Férias':'pendente','Evento':'aprovado'};
+  return `<span class="badge ${map[tipo]||''}">${escapeHtml(tipo)}</span>`;
+}
+
+/* ============================== LOGIN ============================== */
+function viewLogin(){
+  return `
+  <div class="card" style="max-width:420px;margin:0 auto;">
+    <h2>Entrar</h2>
+    <form onsubmit="handleLogin(event)">
+      <div class="field"><label>Email</label><input required type="email" name="email"></div>
+      <div class="field"><label>Senha</label><input required type="password" name="senha"></div>
+      <button class="btn" type="submit" style="width:100%;">Entrar</button>
+    </form>
+    <p style="margin-top:14px;">Ainda não tem cadastro?
+      <button class="link-btn" onclick="go('cadastroAluno')">Inscreva-se como aluno</button> ou
+      <button class="link-btn" onclick="go('cadastroEquipe')">como professor/secretaria</button>
+    </p>
+  </div>`;
+}
+
+async function handleLogin(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('login', { email: f.email.value, senha: f.senha.value });
+      setSession(data.token, data.usuario);
+      toast('Bem-vindo(a), ' + data.usuario.nome + '!', 'success');
+      go('painel');
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+/* ============================== PAINEL (roteador por perfil) ============================== */
+const TABS = {
+  aluno: [['inicio','Início'],['meusDados','Meus Dados'],['pagamentos','Pagamentos'],['certificado','Certificado'],['stories','Stories'],['avisos','Avisos'],['calendario','Calendário']],
+  secretaria: [['financeiro','Financeiro'],['pagamentosPendentes','Aprovar Pagamentos'],['aprovacoesAlunos','Aprovar Alunos'],['painelAlunos','Painel de Alunos'],['usuarios','Usuários'],['avisos','Avisos'],['stories','Aprovar Stories'],['calendario','Calendário'],['meusDados','Meus Dados']],
+  professor: [['notas','Notas/Trabalho/Estágio'],['presenca','Presença'],['painelAlunos','Painel de Alunos'],['apostilas','Enviar Apostila'],['calendario','Calendário'],['meusDados','Meus Dados']],
+  coordenador: [['aprovacoes','Aprovar Cadastros'],['trilha','Trilha e Estágio'],['certificados','Certificados'],['presenca','Presença'],['painelAlunos','Painel de Alunos'],['usuarios','Usuários'],['apostilas','Enviar Apostila'],['calendario','Calendário'],['equipe','Coordenadores'],['meusDados','Meus Dados']]
+};
+
+function viewPainel(){
+  const perfil = state.user.perfil;
+  const tabs = TABS[perfil] || [];
+  const current = state.tab || defaultTab(perfil);
+  let html = `<h2 style="text-transform:capitalize;">Painel — ${escapeHtml(perfil)}</h2>`;
+  html += `<div class="tabs">` + tabs.map(([key,label]) =>
+    `<button class="tab-btn ${key===current?'active':''}" onclick="setTab('${key}')">${label}</button>`
+  ).join('') + `</div>`;
+  html += `<div id="tab-content"><p class="muted">Carregando...</p></div>`;
+  return html;
+}
+
+async function loadTabData(perfil, tab){
+  const el = document.getElementById('tab-content');
+  if (!el) return;
+  try{
+    let html = '';
+    if (perfil === 'aluno') html = await renderAlunoTab(tab);
+    else if (perfil === 'secretaria') html = await renderSecretariaTab(tab);
+    else if (perfil === 'professor') html = await renderProfessorTab(tab);
+    else if (perfil === 'coordenador') html = await renderCoordenadorTab(tab);
+    el.innerHTML = html;
+  }catch(e){
+    el.innerHTML = `<div class="card"><p style="color:var(--danger);">${escapeHtml(e.message)}</p></div>`;
+  }
+}
+
+/* ============================== ALUNO ============================== */
+async function renderAlunoTab(tab){
+  if (tab === 'inicio'){
+    const d = await api('getDashboardAluno', {});
+    return `
+    <div class="grid grid-3">
+      <div class="stat"><div class="label">Progresso da trilha</div><div class="value">${d.percentualTrilha}%</div></div>
+      <div class="stat"><div class="label">Certificado</div><div class="value">${badge(d.certificadoStatus)}</div></div>
+      <div class="stat"><div class="label">Turma / Turno</div><div class="value" style="font-size:16px;">${escapeHtml(d.turma)||'—'} · ${escapeHtml(d.turno)||'—'}</div></div>
+      <div class="stat"><div class="label">Situação</div><div class="value">${badge(d.situacao)}</div></div>
+      <div class="stat"><div class="label">Área de estágio</div><div class="value" style="font-size:16px;">${d.areaEstagio ? escapeHtml(d.areaEstagio) : 'Não definido'}</div></div>
+    </div>
+    <div class="card"><h3>Últimos avisos</h3>${renderAvisosList(d.ultimosAvisos)}</div>`;
+  }
+  if (tab === 'pagamentos'){
+    const pagamentos = await api('getPagamentos', {});
+    return `
+    <div class="card">
+      <h3>Enviar pagamento mensal</h3>
+      <form onsubmit="handleEnviarPagamento(event)">
+        <div class="row">
+          <div class="field"><label>Mês de referência</label><input required type="month" name="mesReferencia"></div>
+          <div class="field"><label>Valor (R$)</label><input required type="number" step="0.01" name="valor"></div>
+        </div>
+        <div class="field"><label>Comprovante (imagem ou PDF)</label><input type="file" name="comprovante" accept="image/*,.pdf"></div>
+        <button class="btn" type="submit">Enviar pagamento</button>
+      </form>
+    </div>
+    <div class="card"><h3>Histórico</h3>${renderPagamentosTable(pagamentos, false)}</div>`;
+  }
+  if (tab === 'certificado'){
+    const c = await api('getCertificado', {});
+    return `<div class="card">
+      <h3>Certificado digital</h3>
+      <p>Status: ${badge(c.status)}</p>
+      ${c.status === 'liberado'
+        ? `<p>Liberado em ${fmtDate(c.dataLiberacao)}</p><a class="btn" href="${escapeHtml(c.url)}" target="_blank">⬇ Baixar certificado</a>`
+        : `<p class="muted">Seu certificado será liberado assim que o coordenador geral confirmar a conclusão do curso.</p>`}
+    </div>`;
+  }
+  if (tab === 'stories'){
+    return `<div class="card">
+      <h3>Inscrição para postar nos Stories</h3>
+      <p class="muted">Envie sua foto padrão. A secretaria aprova antes da publicação.</p>
+      <form onsubmit="handleInscreverStory(event)">
+        <div class="field"><label>Foto</label><input required type="file" name="foto" accept="image/*"></div>
+        <button class="btn" type="submit">Enviar inscrição</button>
+      </form>
+    </div>`;
+  }
+  if (tab === 'avisos'){
+    const avisos = await api('listarAvisos', {});
+    return `<div class="card"><h3>Avisos</h3>${renderAvisosList(avisos)}</div>`;
+  }
+  if (tab === 'calendario'){
+    const eventos = await api('listarCalendario', {});
+    return `<div class="card"><h3>Calendário</h3>${renderListaCalendario(eventos)}</div>`;
+  }
+  if (tab === 'meusDados') return renderMeusDadosAluno();
+  return '';
+}
+
+async function renderMeusDadosAluno(){
+  const me = await api('getMe', {});
+  const d = await api('getDashboardAluno', {});
+  const u = me.usuario;
+  return `
+  <div class="card">
+    <h3>Meus dados</h3>
+    <p><strong>${escapeHtml(u.nome)}</strong></p>
+    <p class="muted">${escapeHtml(u.email)} · ${escapeHtml(u.telefone)||'—'}</p>
+    <p>Nascimento: ${fmtDate(u.dataNascimento)}</p>
+    <p>Turma / Turno: ${escapeHtml(d.turma)||'—'} / ${escapeHtml(d.turno)||'—'}</p>
+    <p>Sexo: ${escapeHtml(d.sexo)||'—'} · Batizado(a): ${escapeHtml(d.batizado)||'—'}</p>
+    <p>Situação: ${badge(d.situacao)}</p>
+    <p>Área de estágio: ${d.areaEstagio ? escapeHtml(d.areaEstagio) : '<em>Não definido — será definido pela secretaria ou coordenação próximo ao final do curso.</em>'}</p>
+  </div>
+  <div class="card">
+    <h3>Foto de perfil</h3>
+    ${u.fotoUrl ? `<img class="preview" style="max-width:140px;" src="${escapeHtml(u.fotoUrl)}">` : `<p class="muted">Nenhuma foto cadastrada ainda.</p>`}
+    <form onsubmit="handleAtualizarFoto(event)" style="margin-top:10px;">
+      <div class="field"><label>Enviar/atualizar foto</label><input required type="file" name="foto" accept="image/*"></div>
+      <button class="btn" type="submit">Salvar foto</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Downloads</h3>
+    <p class="muted">A carteirinha usa a foto de perfil acima. O relatório traz sua frequência (em número e %), os pagamentos mensais e o total pago no ano até o momento.</p>
+    <button class="btn secondary" onclick="baixarCarteirinha()">🪪 Baixar carteirinha (PDF)</button>
+    <button class="btn secondary" onclick="baixarRelatorioAluno()">📄 Baixar meu relatório (PDF)</button>
+  </div>`;
+}
+
+function renderPagamentosTable(pagamentos, comAluno){
+  if (!pagamentos.length) return `<p class="empty">Nenhum pagamento registrado ainda.</p>`;
+  return `<table><thead><tr>${comAluno?'<th>Aluno</th>':''}<th>Mês</th><th>Valor</th><th>Enviado em</th><th>Status</th>${comAluno?'<th></th>':''}</tr></thead><tbody>
+    ${pagamentos.map(p => `<tr>
+      ${comAluno?`<td>${escapeHtml(p.alunoNome)}</td>`:''}
+      <td>${escapeHtml(p.MesReferencia)}</td><td>${fmtMoney(p.Valor)}</td><td>${fmtDate(p.DataEnvio)}</td>
+      <td>${badge(p.Status)}</td>
+      ${comAluno?`<td>
+        <button class="btn small success" onclick="aprovarPagamento('${p.ID}')">Aprovar</button>
+        <button class="btn small danger" onclick="rejeitarPagamento('${p.ID}')">Rejeitar</button>
+      </td>`:''}
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function renderAvisosList(avisos){
+  if (!avisos.length) return `<p class="empty">Nenhum aviso publicado ainda.</p>`;
+  return avisos.map(a => `
+    <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+      <strong>${escapeHtml(a.Titulo)}</strong> <span class="badge pendente" style="background:#EEF1F4;color:var(--muted);">${escapeHtml(a.Categoria)}</span>
+      <p style="margin:6px 0;">${escapeHtml(a.Mensagem)}</p>
+      <p class="muted" style="font-size:12px;">${fmtDate(a.DataPublicacao)}</p>
+      ${a.ApostilaURL ? `<a class="btn small secondary" href="${escapeHtml(a.ApostilaURL)}" target="_blank">⬇ Baixar apostila${a.ApostilaNome ? ': ' + escapeHtml(a.ApostilaNome) : ''}</a>` : ''}
+    </div>`).join('');
+}
+
+async function handleEnviarPagamento(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const file = await fileToBase64(f.comprovante);
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('enviarPagamento', {
+        mesReferencia: f.mesReferencia.value, valor: f.valor.value,
+        comprovanteBase64: file ? file.base64 : '', comprovanteNome: file ? file.nome : '', comprovanteMime: file ? file.mime : ''
+      });
+      toast(data.mensagem, 'success');
+      if (data.whatsappUrl) window.open(data.whatsappUrl, '_blank');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function handleInscreverStory(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const file = await fileToBase64(f.foto);
+  if (!file){ toast('Selecione uma foto.', 'error'); return; }
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('inscreverStory', { fotoBase64: file.base64, fotoNome: file.nome, fotoMime: file.mime });
+      toast(data.mensagem, 'success');
+      f.reset();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+/* ============================== MEUS DADOS / CARTEIRINHA (comum a todos os perfis) ============================== */
+async function renderMeusDadosGenerico(){
+  const me = await api('getMe', {});
+  const u = me.usuario;
+  return `
+  <div class="card">
+    <h3>Meus dados</h3>
+    <p><strong>${escapeHtml(u.nome)}</strong> <span class="muted" style="text-transform:capitalize;">(${escapeHtml(u.perfil)})</span></p>
+    <p class="muted">${escapeHtml(u.email)} · ${escapeHtml(u.telefone)||'—'}</p>
+    <p>Nascimento: ${fmtDate(u.dataNascimento)}</p>
+  </div>
+  <div class="card">
+    <h3>Foto de perfil</h3>
+    ${u.fotoUrl ? `<img class="preview" style="max-width:140px;" src="${escapeHtml(u.fotoUrl)}">` : `<p class="muted">Nenhuma foto cadastrada ainda.</p>`}
+    <form onsubmit="handleAtualizarFoto(event)" style="margin-top:10px;">
+      <div class="field"><label>Enviar/atualizar foto</label><input required type="file" name="foto" accept="image/*"></div>
+      <button class="btn" type="submit">Salvar foto</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Carteirinha</h3>
+    <button class="btn secondary" onclick="baixarCarteirinha()">🪪 Baixar carteirinha (PDF)</button>
+  </div>`;
+}
+
+async function handleAtualizarFoto(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const file = await fileToBase64(f.foto);
+  if (!file){ toast('Selecione uma foto.', 'error'); return; }
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('atualizarFoto', { fotoBase64: file.base64, fotoNome: file.nome, fotoMime: file.mime });
+      state.user.fotoUrl = data.url;
+      localStorage.setItem('se_user', JSON.stringify(state.user));
+      toast(data.mensagem, 'success');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function baixarCarteirinha(){
+  try{
+    toast('Gerando carteirinha em PDF...', '');
+    const data = await api('baixarCarteirinha', {});
+    window.open(data.url, '_blank');
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+async function baixarRelatorioAluno(){
+  try{
+    toast('Gerando relatório em PDF...', '');
+    const data = await api('baixarRelatorioAluno', {});
+    window.open(data.url, '_blank');
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+async function baixarRelatorioFinanceiro(){
+  try{
+    toast('Gerando relatório financeiro em PDF...', '');
+    const data = await api('baixarRelatorioFinanceiro', {});
+    window.open(data.url, '_blank');
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+/* ============================== CALENDÁRIO (aba dentro do painel) ============================== */
+async function renderCalendarioTab(podeEditar){
+  const eventos = await api('listarCalendario', {});
+  let html = `<div class="card"><h3>Calendário</h3>${renderListaCalendarioAdmin(eventos, podeEditar)}</div>`;
+  if (podeEditar){
+    html += `<div class="card">
+      <h3>Adicionar evento</h3>
+      <form onsubmit="handleCriarEvento(event)">
+        <div class="row">
+          <div class="field"><label>Data</label><input required type="date" name="data"></div>
+          <div class="field"><label>Data final (opcional, p/ férias)</label><input type="date" name="dataFim"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Tipo</label>
+            <select name="tipo"><option>Aula Regular</option><option>Feriado</option><option>Férias</option><option>Evento</option></select>
+          </div>
+          <div class="field"><label>Título</label><input required name="titulo"></div>
+        </div>
+        <div class="field"><label>Descrição</label><input name="descricao" placeholder="Ex: Segundas e quartas, 19h às 22h"></div>
+        <button class="btn" type="submit">Adicionar</button>
+      </form>
+    </div>`;
+  }
+  return html;
+}
+
+function renderListaCalendarioAdmin(eventos, podeEditar){
+  if (!eventos.length) return `<p class="empty">Nenhum evento cadastrado ainda.</p>`;
+  return `<table><thead><tr><th>Data</th><th>Até</th><th>Tipo</th><th>Título</th><th>Descrição</th>${podeEditar?'<th></th>':''}</tr></thead><tbody>
+    ${eventos.map(e => `<tr>
+      <td>${fmtDate(e.Data)}</td><td>${e.DataFim ? fmtDate(e.DataFim) : '—'}</td>
+      <td>${badgeTipoEvento(e.Tipo)}</td><td>${escapeHtml(e.Titulo)}</td><td>${escapeHtml(e.Descricao)}</td>
+      ${podeEditar ? `<td><button class="btn small danger" onclick="excluirEvento('${e.ID}')">Excluir</button></td>` : ''}
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+async function handleCriarEvento(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('criarEventoCalendario', {
+        data: f.data.value, dataFim: f.dataFim.value, tipo: f.tipo.value,
+        titulo: f.titulo.value, descricao: f.descricao.value
+      });
+      toast(data.mensagem, 'success');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function excluirEvento(id){
+  if (!confirm('Excluir este evento do calendário?')) return;
+  await runAction('excluirEventoCalendario', { eventoId: id });
+}
+
+/* ============================== PAINEL DE ALUNOS (estatísticas + lista + busca) ============================== */
+let alunosCache = [];
+
+async function renderPainelAlunosTab(podeEditar){
+  const lista = await api('listarAlunosDetalhado', {});
+  alunosCache = lista;
+  return `
+  <div class="card">${statsAlunosHtml(lista)}</div>
+  <div class="card">
+    <div class="field"><label>Buscar aluno</label><input id="buscaAluno" oninput="filtrarAlunos()" placeholder="Digite o nome..."></div>
+    <div id="tabelaAlunosContainer">${tabelaAlunosHtml(lista, podeEditar)}</div>
+  </div>`;
+}
+
+function statsAlunosHtml(lista){
+  const total = lista.length;
+  const ativos = lista.filter(a => a.situacao === 'Ativo').length;
+  const inativos = lista.filter(a => a.situacao === 'Inativo').length;
+  const homens = lista.filter(a => a.sexo === 'Masculino').length;
+  const mulheres = lista.filter(a => a.sexo === 'Feminino').length;
+  const batizados = lista.filter(a => a.batizado === 'Sim').length;
+  const naoBatizados = lista.filter(a => a.batizado === 'Não').length;
+  const mesAtual = new Date().getMonth();
+  const aniversariantes = lista.filter(a => {
+    if (!a.dataNascimento) return false;
+    const d = new Date(a.dataNascimento);
+    return !isNaN(d) && d.getMonth() === mesAtual;
+  });
+  return `
+  <h3>Painel de alunos</h3>
+  <div class="grid grid-3">
+    <div class="stat"><div class="label">Total de alunos</div><div class="value">${total}</div></div>
+    <div class="stat"><div class="label">Ativos</div><div class="value" style="color:var(--success);">${ativos}</div></div>
+    <div class="stat"><div class="label">Inativos</div><div class="value" style="color:var(--danger);">${inativos}</div></div>
+    <div class="stat"><div class="label">Homens</div><div class="value">${homens}</div></div>
+    <div class="stat"><div class="label">Mulheres</div><div class="value">${mulheres}</div></div>
+    <div class="stat"><div class="label">Batizados</div><div class="value">${batizados}</div></div>
+    <div class="stat"><div class="label">Não batizados</div><div class="value">${naoBatizados}</div></div>
+    <div class="stat"><div class="label">Aniversariantes do mês</div><div class="value">${aniversariantes.length}</div></div>
+  </div>
+  ${aniversariantes.length ? `<div style="margin-top:14px;"><strong>Aniversariantes do mês:</strong>
+    <ul>${aniversariantes.map(a => `<li>${escapeHtml(a.nome)} — ${fmtDate(a.dataNascimento)}</li>`).join('')}</ul></div>` : ''}`;
+}
+
+function tabelaAlunosHtml(lista, podeEditar){
+  if (!lista.length) return `<p class="empty">Nenhum aluno encontrado.</p>`;
+  const head = `<tr><th>Nome</th><th>Turma</th><th>Situação</th><th>Sexo</th><th>Batizado</th><th>% Trilha</th><th>Certificado</th><th>Área de Estágio</th>${podeEditar?'<th></th>':''}</tr>`;
+  const rows = lista.map(a => {
+    if (!podeEditar){
+      return `<tr>
+        <td>${escapeHtml(a.nome)}</td><td>${escapeHtml(a.turma)}</td>
+        <td>${badge(a.situacao)}</td><td>${escapeHtml(a.sexo)||'—'}</td><td>${escapeHtml(a.batizado)||'—'}</td>
+        <td>${a.percentualTrilha}%</td><td>${badge(a.certificadoStatus)}</td>
+        <td>${a.areaEstagio ? escapeHtml(a.areaEstagio) : '<em>Não definido</em>'}</td>
+      </tr>`;
+    }
+    return `<tr id="row-aluno-${a.id}">
+      <td>${escapeHtml(a.nome)}</td>
+      <td><input class="f-turma" value="${escapeHtml(a.turma)}" style="width:110px;padding:5px;border:1px solid var(--border);border-radius:6px;"></td>
+      <td><select class="f-situacao">
+        <option value="Ativo" ${a.situacao==='Ativo'?'selected':''}>Ativo</option>
+        <option value="Inativo" ${a.situacao==='Inativo'?'selected':''}>Inativo</option>
+      </select></td>
+      <td><select class="f-sexo">
+        <option value="">—</option>
+        <option value="Masculino" ${a.sexo==='Masculino'?'selected':''}>Masculino</option>
+        <option value="Feminino" ${a.sexo==='Feminino'?'selected':''}>Feminino</option>
+      </select></td>
+      <td><select class="f-batizado">
+        <option value="">—</option>
+        <option value="Sim" ${a.batizado==='Sim'?'selected':''}>Sim</option>
+        <option value="Não" ${a.batizado==='Não'?'selected':''}>Não</option>
+      </select></td>
+      <td>${a.percentualTrilha}%</td><td>${badge(a.certificadoStatus)}</td>
+      <td><input class="f-areaEstagio" value="${escapeHtml(a.areaEstagio)}" placeholder="Não definido" style="width:140px;padding:5px;border:1px solid var(--border);border-radius:6px;"></td>
+      <td><button class="btn small" onclick="salvarAluno('${a.id}')">Salvar</button></td>
+    </tr>`;
+  }).join('');
+  return `<table><thead>${head}</thead><tbody>${rows}</tbody></table>`;
+}
+
+function filtrarAlunos(){
+  const termo = document.getElementById('buscaAluno').value.toLowerCase();
+  const filtrado = alunosCache.filter(a => a.nome.toLowerCase().includes(termo));
+  document.getElementById('tabelaAlunosContainer').innerHTML = tabelaAlunosHtml(filtrado, state.user.perfil === 'secretaria');
+}
+
+async function salvarAluno(id){
+  const row = document.getElementById('row-aluno-' + id);
+  const payload = {
+    alunoId: id,
+    turma: row.querySelector('.f-turma').value,
+    situacao: row.querySelector('.f-situacao').value,
+    sexo: row.querySelector('.f-sexo').value,
+    batizado: row.querySelector('.f-batizado').value
+  };
+  const areaEstagio = row.querySelector('.f-areaEstagio').value;
+  try{
+    await api('atualizarAluno', payload);
+    await api('definirAreaEstagio', { alunoId: id, areaEstagio: areaEstagio });
+    toast('Dados do aluno atualizados.', 'success');
+    render();
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+/* ============================== USUÁRIOS (secretaria/coordenador) ============================== */
+let usuariosCache = [];
+
+async function renderUsuariosTab(){
+  const usuarios = await api('listarTodosUsuarios', {});
+  usuariosCache = usuarios;
+  return `<div class="card">
+    <h3>Usuários do sistema</h3>
+    <div class="field"><label>Buscar por nome ou email</label><input id="buscaUsuario" oninput="filtrarUsuarios()" placeholder="Digite para buscar..."></div>
+    <div id="tabelaUsuariosContainer">${tabelaUsuariosHtml(usuarios)}</div>
+  </div>`;
+}
+
+function tabelaUsuariosHtml(lista){
+  if (!lista.length) return `<p class="empty">Nenhum usuário encontrado.</p>`;
+  return `<table><thead><tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Status</th><th>Cadastro</th></tr></thead><tbody>
+    ${lista.map(u => `<tr>
+      <td>${escapeHtml(u.nome)}</td><td>${escapeHtml(u.email)}</td>
+      <td style="text-transform:capitalize;">${escapeHtml(u.perfil)}</td><td>${badge(u.status)}</td><td>${fmtDate(u.dataCadastro)}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function filtrarUsuarios(){
+  const termo = document.getElementById('buscaUsuario').value.toLowerCase();
+  const filtrado = usuariosCache.filter(u => u.nome.toLowerCase().includes(termo) || u.email.toLowerCase().includes(termo));
+  document.getElementById('tabelaUsuariosContainer').innerHTML = tabelaUsuariosHtml(filtrado);
+}
+
+/* ============================== SECRETARIA ============================== */
+async function renderSecretariaTab(tab){
+  if (tab === 'financeiro'){
+    const d = await api('getDashboardFinanceiro', {});
+    const maxCat = Math.max(1, ...d.entradasPorCategoria.map(c=>c.valor), ...d.saidasPorCategoria.map(c=>c.valor));
+    return `
+    <div class="grid grid-3">
+      <div class="stat"><div class="label">Entradas</div><div class="value" style="color:var(--success);">${fmtMoney(d.totalEntradas)}</div></div>
+      <div class="stat"><div class="label">Saídas</div><div class="value" style="color:var(--danger);">${fmtMoney(d.totalSaidas)}</div></div>
+      <div class="stat"><div class="label">Caixa atual</div><div class="value">${fmtMoney(d.caixaAtual)}</div></div>
+    </div>
+    <div class="split">
+      <div class="card"><h3>Entradas por categoria</h3>${renderBars(d.entradasPorCategoria, maxCat)}</div>
+      <div class="card"><h3>Saídas por categoria</h3>${renderBars(d.saidasPorCategoria, maxCat)}</div>
+    </div>
+    <div class="card">
+      <h3>Lançar movimentação manual</h3>
+      <form onsubmit="handleLancarMovimentacao(event)">
+        <div class="row">
+          <div class="field"><label>Tipo</label><select name="tipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+          <div class="field"><label>Data</label><input type="date" name="data"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Categoria</label><input required name="categoria" placeholder="Ex: Salários Professores"></div>
+          <div class="field"><label>Valor (R$)</label><input required type="number" step="0.01" name="valor"></div>
+        </div>
+        <div class="field"><label>Descrição</label><input name="descricao"></div>
+        <button class="btn" type="submit">Lançar</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Relatório financeiro</h3>
+      <p class="muted">Gera um PDF com totais, caixa atual e o detalhamento de entradas e saídas.</p>
+      <button class="btn secondary" onclick="baixarRelatorioFinanceiro()">📄 Baixar relatório financeiro (PDF)</button>
+    </div>`;
+  }
+  if (tab === 'pagamentosPendentes'){
+    const pendentes = await api('listarPagamentosPendentes', {});
+    return `<div class="card"><h3>Pagamentos aguardando aprovação</h3>
+      ${pendentes.length ? pendentes.map(p => `
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div><strong>${escapeHtml(p.alunoNome)}</strong> — ${escapeHtml(p.MesReferencia)} — ${fmtMoney(p.Valor)}
+            ${p.ComprovanteURL ? `<br><a href="${escapeHtml(p.ComprovanteURL)}" target="_blank">Ver comprovante</a>` : '<br><span class="muted">Sem comprovante anexado</span>'}
+          </div>
+          <div><button class="btn small success" onclick="aprovarPagamento('${p.ID}')">Aprovar</button>
+          <button class="btn small danger" onclick="rejeitarPagamento('${p.ID}')">Rejeitar</button></div>
+        </div>`).join('') : `<p class="empty">Nenhum pagamento pendente.</p>`}
+    </div>`;
+  }
+  if (tab === 'aprovacoesAlunos'){
+    const pendentes = await api('listarPendentes', {});
+    return renderAprovacoesCard(pendentes, 'aluno');
+  }
+  if (tab === 'avisos') return renderAvisosAdminTab(await api('listarAvisos', {}), 'secretaria');
+  if (tab === 'stories'){
+    const pendentes = await api('listarStoriesPendentes', {});
+    return `<div class="card"><h3>Inscrições para Stories</h3>
+      ${pendentes.length ? `<div class="grid grid-3">` + pendentes.map(s => `
+        <div class="card" style="margin:0;">
+          <img class="preview" src="${escapeHtml(s.FotoURL)}" alt="foto">
+          <p><strong>${escapeHtml(s.alunoNome)}</strong></p>
+          <button class="btn small success" onclick="aprovarStory('${s.ID}')">Aprovar</button>
+          <button class="btn small danger" onclick="rejeitarStory('${s.ID}')">Rejeitar</button>
+        </div>`).join('') + `</div>` : `<p class="empty">Nenhuma inscrição pendente.</p>`}
+    </div>`;
+  }
+  if (tab === 'painelAlunos') return renderPainelAlunosTab(true);
+  if (tab === 'usuarios') return renderUsuariosTab();
+  if (tab === 'calendario') return renderCalendarioTab(true);
+  if (tab === 'meusDados') return renderMeusDadosGenerico();
+  return '';
+}
+
+function renderBars(cats, max){
+  if (!cats.length) return `<p class="empty">Sem lançamentos ainda.</p>`;
+  return cats.map(c => `
+    <div class="bar-row">
+      <div class="name">${escapeHtml(c.categoria)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(c.valor/max*100)}%;"></div></div>
+      <div class="val">${fmtMoney(c.valor)}</div>
+    </div>`).join('');
+}
+
+function renderAprovacoesCard(pendentes, tipoLabel){
+  return `<div class="card"><h3>Cadastros de ${tipoLabel} pendentes</h3>
+    ${pendentes.length ? `<table><thead><tr><th>Nome</th><th>Email</th><th>Data</th><th></th></tr></thead><tbody>
+      ${pendentes.map(u => `<tr>
+        <td>${escapeHtml(u.nome)} ${u.perfil ? '<span class="muted">('+escapeHtml(u.perfil)+')</span>' : ''}</td>
+        <td>${escapeHtml(u.email)}</td><td>${fmtDate(u.dataCadastro)}</td>
+        <td><button class="btn small success" onclick="aprovarUsuario('${u.id}')">Aprovar</button>
+        <button class="btn small danger" onclick="rejeitarUsuario('${u.id}')">Rejeitar</button></td>
+      </tr>`).join('')}
+    </tbody></table>` : `<p class="empty">Nenhum cadastro pendente.</p>`}
+  </div>`;
+}
+
+function renderAvisosAdminTab(avisos, perfil){
+  return `<div class="card">
+    <h3>Publicar aviso</h3>
+    <form onsubmit="handleCriarAviso(event)">
+      <div class="field"><label>Título</label><input required name="titulo"></div>
+      <div class="field"><label>Categoria</label><input name="categoria" placeholder="Ex: Financeiro, Aulas, Geral"></div>
+      <div class="field"><label>Mensagem</label><textarea required name="mensagem"></textarea></div>
+      <div class="field"><label>Anexar apostila (opcional)</label><input type="file" name="apostila"></div>
+      <button class="btn" type="submit">Publicar</button>
+    </form>
+  </div>
+  <div class="card"><h3>Avisos publicados</h3>${renderAvisosList(avisos)}</div>`;
+}
+
+async function handleCriarAviso(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const file = await fileToBase64(f.apostila);
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('criarAviso', {
+        titulo: f.titulo.value, mensagem: f.mensagem.value, categoria: f.categoria.value || 'Geral',
+        apostilaBase64: file ? file.base64 : '', apostilaNome: file ? file.nome : '', apostilaMime: file ? file.mime : ''
+      });
+      toast(data.mensagem, 'success');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function handleLancarMovimentacao(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const action = f.tipo.value === 'entrada' ? 'lancarEntrada' : 'lancarSaida';
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api(action, { data: f.data.value, categoria: f.categoria.value, valor: f.valor.value, descricao: f.descricao.value });
+      toast(data.mensagem, 'success');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function aprovarPagamento(id){ await runAction('aprovarPagamento', {pagamentoId:id}); }
+async function rejeitarPagamento(id){ await runAction('rejeitarPagamento', {pagamentoId:id}); }
+async function aprovarUsuario(id){ await runAction('aprovarUsuario', {usuarioId:id}); }
+async function rejeitarUsuario(id){ await runAction('rejeitarUsuario', {usuarioId:id}); }
+async function aprovarStory(id){ await runAction('aprovarStory', {storyId:id}); }
+async function rejeitarStory(id){ await runAction('rejeitarStory', {storyId:id}); }
+
+async function runAction(action, payload){
+  try{
+    const data = await api(action, payload);
+    toast(data.mensagem, 'success');
+    render();
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+/* ============================== PROFESSOR ============================== */
+async function renderProfessorTab(tab){
+  if (tab === 'notas'){
+    const alunos = await api('listarAlunos', {});
+    return `<div class="card">
+      <h3>Lançar nota / trabalho / estágio</h3>
+      <form onsubmit="handleLancarNota(event)">
+        <div class="field"><label>Aluno</label><select required name="alunoId">${alunos.map(a=>`<option value="${a.id}">${escapeHtml(a.nome)} (${escapeHtml(a.turma)})</option>`).join('')}</select></div>
+        <div class="row">
+          <div class="field"><label>Disciplina</label><input required name="disciplina"></div>
+          <div class="field"><label>Nota (0-10)</label><input type="number" step="0.1" min="0" max="10" name="nota"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Trabalho</label><select name="trabalhoStatus"><option value="pendente">Pendente</option><option value="concluido">Concluído</option></select></div>
+          <div class="field"><label>Estágio</label><select name="estagioStatus"><option value="pendente">Pendente</option><option value="concluido">Concluído</option></select></div>
+        </div>
+        <div class="field"><label>Observação</label><input name="observacao"></div>
+        <button class="btn" type="submit">Salvar lançamento</button>
+      </form>
+    </div>`;
+  }
+  if (tab === 'presenca'){
+    const alunos = await api('listarAlunos', {});
+    const presencas = await api('listarPresencas', {});
+    return `<div class="card">
+      <h3>Registrar presença</h3>
+      <form onsubmit="handleMarcarPresenca(event)">
+        <div class="field"><label>Aluno</label><select required name="alunoId">${alunos.map(a=>`<option value="${a.id}">${escapeHtml(a.nome)} (${escapeHtml(a.turma)})</option>`).join('')}</select></div>
+        <div class="row">
+          <div class="field"><label>Data</label><input required type="date" name="data"></div>
+          <div class="field"><label>Status</label><select name="status"><option value="presente">Presente</option><option value="ausente">Ausente</option></select></div>
+        </div>
+        <div class="field"><label>Observação</label><input name="observacao"></div>
+        <button class="btn" type="submit">Registrar</button>
+      </form>
+    </div>
+    <div class="card"><h3>Últimos registros</h3>${renderPresencasTable(presencas)}</div>`;
+  }
+  if (tab === 'apostilas') return renderAvisosAdminTab(await api('listarAvisos', {categoria:'Apostila'}), 'professor');
+  if (tab === 'painelAlunos') return renderPainelAlunosTab(false);
+  if (tab === 'calendario') return renderCalendarioTab(false);
+  if (tab === 'meusDados') return renderMeusDadosGenerico();
+  return '';
+}
+
+function renderPresencasTable(rows){
+  if (!rows.length) return `<p class="empty">Nenhum registro ainda.</p>`;
+  return `<table><thead><tr><th>Aluno ID</th><th>Data</th><th>Status</th><th>Obs.</th></tr></thead><tbody>
+    ${rows.slice(0,50).map(r=>`<tr><td>${escapeHtml(r.AlunoID)}</td><td>${fmtDate(r.Data)}</td><td>${badge(r.Status)}</td><td>${escapeHtml(r.Observacao)}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+async function handleLancarNota(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('lancarNota', {
+        alunoId: f.alunoId.value, disciplina: f.disciplina.value, nota: f.nota.value,
+        trabalhoStatus: f.trabalhoStatus.value, estagioStatus: f.estagioStatus.value, observacao: f.observacao.value
+      });
+      toast(data.mensagem, 'success');
+      f.reset();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+async function handleMarcarPresenca(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('marcarPresenca', { alunoId: f.alunoId.value, data: f.data.value, status: f.status.value, observacao: f.observacao.value });
+      toast(data.mensagem, 'success');
+      render();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+/* ============================== COORDENADOR ============================== */
+async function renderCoordenadorTab(tab){
+  if (tab === 'aprovacoes'){
+    const pendentes = await api('listarPendentes', {});
+    return renderAprovacoesCard(pendentes, 'equipe');
+  }
+  if (tab === 'trilha'){
+    const alunos = await api('listarAlunosDetalhado', {});
+    return `<div class="card"><h3>Trilha do curso e área de estágio</h3>
+      <p class="muted">A área de estágio fica "Não definido" até você (ou a secretaria) definir — normalmente próximo do final do curso.</p>
+      <table><thead><tr><th>Aluno</th><th>Turma</th><th>% Trilha</th><th>Área de Estágio</th><th></th></tr></thead><tbody>
+        ${alunos.map(a => `<tr id="row-trilha-${a.id}">
+          <td>${escapeHtml(a.nome)}</td><td>${escapeHtml(a.turma)}</td>
+          <td><input class="f-percentual" type="number" min="0" max="100" value="${a.percentualTrilha}" style="width:70px;padding:6px;border:1px solid var(--border);border-radius:6px;"></td>
+          <td><input class="f-areaEstagio" value="${escapeHtml(a.areaEstagio)}" placeholder="Não definido" style="width:170px;padding:6px;border:1px solid var(--border);border-radius:6px;"></td>
+          <td><button class="btn small" onclick="salvarTrilha('${a.id}')">Salvar</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>`;
+  }
+  if (tab === 'certificados'){
+    const alunos = await api('listarAlunos', {});
+    return `<div class="card"><h3>Certificados digitais</h3>
+      <table><thead><tr><th>Aluno</th><th>Turma</th><th>Trilha</th><th>Status</th><th></th></tr></thead><tbody>
+        ${alunos.map(a => `<tr>
+          <td>${escapeHtml(a.nome)}</td><td>${escapeHtml(a.turma)}</td><td>${a.percentualTrilha}%</td>
+          <td>${badge(a.certificadoStatus)}</td>
+          <td>${a.certificadoStatus !== 'liberado' ? `<button class="btn small success" onclick="okCertificado('${a.id}')">OK — liberar</button>` : '<span class="muted">Liberado</span>'}</td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>`;
+  }
+  if (tab === 'presenca'){
+    const presencas = await api('listarPresencas', {});
+    return `<div class="card"><h3>Controle de presença (todas as turmas)</h3>${renderPresencasTable(presencas)}</div>`;
+  }
+  if (tab === 'apostilas') return renderAvisosAdminTab(await api('listarAvisos', {categoria:'Apostila'}), 'coordenador');
+  if (tab === 'painelAlunos') return renderPainelAlunosTab(false);
+  if (tab === 'usuarios') return renderUsuariosTab();
+  if (tab === 'calendario') return renderCalendarioTab(false);
+  if (tab === 'meusDados') return renderMeusDadosGenerico();
+  if (tab === 'equipe'){
+    return `<div class="card">
+      <h3>Criar novo coordenador</h3>
+      <form onsubmit="handleCriarCoordenador(event)">
+        <div class="field"><label>Nome</label><input required name="nome"></div>
+        <div class="field"><label>Email</label><input required type="email" name="email"></div>
+        <div class="field"><label>Senha</label><input required type="password" name="senha" minlength="4"></div>
+        <button class="btn" type="submit">Criar coordenador</button>
+      </form>
+    </div>`;
+  }
+  return '';
+}
+
+async function salvarTrilha(id){
+  const row = document.getElementById('row-trilha-' + id);
+  const percentual = row.querySelector('.f-percentual').value;
+  const areaEstagio = row.querySelector('.f-areaEstagio').value;
+  try{
+    await api('atualizarTrilha', { alunoId: id, percentual: percentual });
+    await api('definirAreaEstagio', { alunoId: id, areaEstagio: areaEstagio });
+    toast('Atualizado.', 'success');
+    render();
+  }catch(e){ toast(e.message, 'error'); }
+}
+
+async function okCertificado(alunoId){
+  if (!confirm('Confirma a liberação do certificado para este aluno?')) return;
+  await runAction('okCertificado', { alunoId: alunoId });
+}
+
+async function handleCriarCoordenador(ev){
+  ev.preventDefault();
+  const f = ev.target;
+  const btn = f.querySelector('button[type=submit]');
+  await withLoading(btn, async () => {
+    try{
+      const data = await api('criarCoordenador', { nome: f.nome.value, email: f.email.value, senha: f.senha.value });
+      toast(data.mensagem, 'success');
+      f.reset();
+    }catch(e){ toast(e.message, 'error'); }
+  });
+}
+
+/* ============================== INICIALIZAÇÃO ============================== */
+if (state.user && state.token) state.route = 'painel';
+render();
+</script>
+</body>
+</html>
